@@ -32,4 +32,12 @@ export default class AccountList extends LightningElement {
             this.record = undefined;
         }
     }
+
+    /**
+     * レポート表示
+     * @param {*} event 
+     */
+    handleReportClick(event) {
+        window.open('/apex/lwcReport', '_blank');
+    }
 }

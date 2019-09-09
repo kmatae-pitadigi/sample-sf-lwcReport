@@ -1,0 +1,139 @@
+<apex:page docType="html-5.0" controller="lwcReport" sidebar="false" showHeader="false" title="取引先リスト">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+    <style>
+        /* 印刷時の用紙設定 */
+        @page {
+            size: A4; /* 用紙サイズ */
+            margin: 0; /* ヘッダー・フッダーを無効化 */
+        }
+        /* 要素の初期化 */
+        * {
+            /* マージン・パディングをリセットした方がデザインしやすい */
+            margin: 0;
+            padding: 0;
+            /* デフォルトのフォント */
+            color: #191970;
+            font-family: "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック体", YuGothic,
+                sans-serif;
+            font-size: 11pt;
+            font-weight: normal;
+            /* 背景色・背景画像を印刷する（Chromeのみで有効） */
+            -webkit-print-color-adjust: exact;
+        }
+        /* リスト初期化 */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        /* ページレイアウト (section.page を１ページとする) */
+        .page {
+            overflow: hidden;
+            position: relative;
+            box-sizing: border-box;
+            page-break-after: always;
+
+            /* 用紙サイズ A4 */
+            height: 296mm;
+            width: 210mm;
+
+            /* 余白サイズ */
+            padding-top: 20mm;
+            padding-left: 20mm;
+            padding-right: 20mm;
+            padding-bottom: : 20mm;
+
+            /* 改ページ指定 */
+            page-break-after: always;
+        }
+        /* プレビュー用のスタイル */
+        @media screen {
+            body {
+                background: #e0e0e0;
+            }
+            .page {
+                background: white; /* 背景を白く */
+                box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3); /* ドロップシャドウ */
+                margin: 5mm auto;
+            }
+        }
+        /* ページ番号 */
+        body {
+            counter-reset: page;
+        }
+        .page::after {
+            position: absolute;
+            bottom: 20mm;
+            right: 20mm;
+            counter-increment: page;
+            content: "- " counter(page) " -";
+        }
+        /* レポートタイトル */
+        div.report-title {
+            height: 14mm;
+            font-weight: bold;
+            font-size: 2em;
+            text-align: center;
+        }
+        /* レポートヘッダー */
+        div.report-header {
+            height: 14mm;
+            text-align: right;
+        }
+        /* レポート内容 */
+        div.report-content {
+            height: 208mm;
+        }
+
+        /* 内容表示テーブル */
+        table.content-list, table.content-list th, table.content-list td {
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
+
+    <section class="page">
+        <div class="report-title">
+            取引先リスト
+        </div>
+        <div class="report-header">
+            印刷日:{!ReportDate}
+        </div>
+        <div class="report-content">
+            <table class="content-list">
+                <thead>
+                    <tr>
+                        <th scope="col">取引先名</th>
+                        <th scope="col">都道府県</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <apex:repeat var="account" value="{!accounts}">
+                        <tr>
+                            <td>
+                                {!account.Name}
+                            </td>
+                            <td>
+                                {!account.BillingState}
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <apex:includeScript value="{!$Resource.jquery}" />
+    <script type="text/javascript">
+        jQuery.noConflict();
+        jQuery(document).ready(() => {
+            setTimeout(() => {
+                window.print();
+                window.close();
+            }, 200);
+        });
+    </script>
+</apex:page>
